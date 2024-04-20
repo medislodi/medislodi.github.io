@@ -1,0 +1,668 @@
+html {
+    font-size: min(14px, 3vw);
+    height: initial;
+
+}
+
+.link-top {
+    display: none;
+}
+
+body {
+    /*スクロールバー非表示（IE・Edge）*/
+    -ms-overflow-style: none;
+    /*スクロールバー非表示（Firefox）*/
+    scrollbar-width: none;
+}
+
+.drop-zone {
+	display: inherit;
+	height: 200px;
+	padding: 25px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-family: "Quicksand", sans-serif;
+	font-weight: 500;
+	font-size: 20px;
+	cursor: pointer;
+	color: #cccccc;
+	border: 4px dashed #009578;
+	border-radius: 10px;
+}
+
+.drop-zone--over {
+	border-style: solid;
+}
+
+.drop-zone__input {
+	display: none;
+}
+
+.drop-zone__thumb {
+	width: 100%;
+	height: 100%;
+	border-radius: 10px;
+	overflow: hidden;
+	background-color: #cccccc;
+	background-size: cover;
+	position: relative;
+}
+
+.drop-zone__thumb::after {
+	content: attr(data-label);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	padding: 5px 0;
+	color: #ffffff;
+	background: rgba(0, 0, 0, 0.75);
+	font-size: 14px;
+	text-align: center;
+}
+
+body::-webkit-scrollbar,
+html::-webkit-scrollbar,
+div::-webkit-scrollbar
+{
+    display:none;
+}
+
+
+html * {
+    -webkit-overflow-scrolling: unset !important;
+    scroll-behavior: smooth;
+}
+
+
+.contents-area {
+    width: calc(85vh / 12 * 9);
+    max-width: 100%;
+    position: relative;
+}
+
+.white-circle-icon {
+    width: 1.8em;
+    height: 1.8em;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    right: 0.2em;
+    translate: 0 -50%;
+}
+
+
+#head-menu-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#head-menu-list > h4 {
+    height: 100%;
+    line-height: 3em;
+    white-space: nowrap;
+}
+
+#head-menu-buttons {
+    display: flex;
+    justify-content: right;
+}
+
+
+.head-menu-button {
+    position: relative;
+    margin: min(0.8em, 1vw);
+    background-color: var(--base-color);
+    width: auto;
+    height: 2.3em;
+    border-radius: 1.1em;
+    padding: 0.1rem 2rem 0.1rem 1rem;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+#adv {
+    position: relative;
+}
+
+#pixi > canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#text-window {
+    background-image: url("/episode/bg_serif.png");
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    width: 100%;
+    height: 21%;
+    bottom: 0;
+    cursor: pointer;
+}
+
+#text-window-name {
+    background-image: url("/episode/frame_name.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 80%;
+    height: 30%;
+    position: absolute;
+    bottom: 73%;
+    margin-left: 3%;
+    font-size: min(min(36px, 4vw), 3vh);
+
+    padding-left: 3%;
+    display: flex;
+    align-items: center;
+}
+
+#text-window-body {
+    position: absolute;
+    top: 35%;
+    margin-left: 3%;
+    font-size: min(min(2.3rem, 2.4vh), 3.7vw);
+    padding-left: 3%;
+}
+
+#cursor-tap-area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+#text-cursor {
+    position: absolute;
+    cursor: pointer;
+    bottom: 1.5%;
+    right: 3%;
+    width: min(2.3rem, 3.5vw);
+    height: min(2.3rem, 3.5vw);
+    transform: rotate(-90deg);
+    animation: move-y .5s infinite alternate ease-in;
+}
+@keyframes move-y {
+    from {
+        transform: translateY(-5px) rotate(-90deg);
+    }
+    to {
+        transform: translateY(0px) rotate(-90deg);
+    }
+}
+
+#selectors-overlay {
+    position: absolute;
+    background-color: rgba(0,0,0,0.2);
+    width: 100%;
+    height: 100%;
+    opacity: 100;
+    transition: opacity .2s ease-in;
+}
+
+.selectors {
+    position: absolute;
+    bottom: 40%;
+    left: 50%;
+    translate: -50% 50%;
+    width: 90%;
+}
+
+
+
+.select-btn {
+    background-color: var(--background);
+    font-weight: bold;
+    width: 100%;
+    height: min(5rem, max(10vw, 8vh));
+    line-height: min(5rem, max(10vw, 8vh));
+    border-radius: var(--border-radius);
+    border: 1px solid var(--base-color);
+    position: relative;
+    margin: min(4rem, 6vw) 0;
+    font-size: min(1.6rem, 3.5vw);
+    color: var(--font-color);
+    padding-left: 0;
+    padding-right: min(5rem, max(10vw, 8vh));
+    transform-origin: center;
+    transition: all 0.5s ease-in;
+    opacity: 0;
+    white-space: nowrap;
+}
+
+.select-btn.show {
+    opacity: 1;
+}
+
+.select-btn.select {
+    transform: scale(1.2,1.2);
+}
+
+.select-btn:after {
+    content: "";
+    background-image: url("/episode/icon_check.png");
+    background-repeat: no-repeat;
+    background-position:center;
+    background-size: min(5rem, max(10vw, 8vh));
+    position: absolute;
+    right: 0;
+    width: min(5rem, max(10vw, 8vh));
+    height: min(5rem, max(10vw, 8vh));
+}
+
+:root {
+    --select1: #4FB0FF;
+    --select2: #FF2A61;
+    --select3: #F68415;
+}
+
+#select1 {
+    border-color: var(--select1);
+}
+#select1:after {
+    background-color: var(--select1);
+}
+
+#select2 {
+    border-color: var(--select2);
+}
+#select2:after {
+    background-color: var(--select2);
+}
+
+#select3 {
+    border-color: var(--select3);
+}
+#select3:after {
+    background-color: var(--select3);
+}
+
+
+@media(max-width: 800px){
+    #head-menu-list {
+        grid-template-columns: 1fr;
+    }
+    #head-menu-buttons {
+        justify-content: left;
+    }
+}
+
+
+/* バーの背景を変える */
+progress {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    border-radius: 3px;
+    height: 6px;
+}
+
+::-webkit-progress-bar {
+    background-color: white;
+}
+
+/* バーの進捗率の表示を変える */
+::-moz-progress-bar {
+    background-color: var(--base-color);
+}
+
+::-webkit-progress-value {
+    background-color: var(--base-color);
+}
+
+#start-btn {
+    width: 10rem;
+    display: none;
+    padding-right: 2rem;
+    line-height: normal;
+    opacity: 0;
+    transition: opacity 1s ease-out 1s;
+    height: 2.3rem;
+}
+
+
+
+.pop-anime {
+    animation: pop-anime 1.5s infinite;
+    transition: opacity 1s ease-in;
+}
+.pop-anime-delay-1 {
+    animation-delay: 100ms;
+}
+.pop-anime-delay-2 {
+    animation-delay: 200ms;
+}
+.pop-anime-delay-3 {
+    animation-delay: 300ms;
+}
+.pop-anime-delay-4 {
+    animation-delay: 400ms;
+}
+.pop-anime-delay-5 {
+    animation-delay: 500ms;
+}
+.pop-anime-delay-6 {
+    animation-delay: 600ms;
+}
+@keyframes pop-anime {
+    0% {
+        transform: translateY(0px);
+    }
+    10% {
+        transform: translateY(-3px);
+    }
+    20% {
+        transform: translateY(0px);
+    }
+}
+
+#config-checkbox:checked+#config {
+    display: flex;
+}
+
+#config-checkbox:not(:checked)+#config {
+    display: none;
+}
+
+#config {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#config-menu > header,
+#log-window > header
+{
+    height: 2rem;
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+.close-btn {
+    background-image: url("/episode/icon_close.png");
+    background-color: var(--base-color);
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    border-radius: unset;
+    width: 2rem;
+    height: 2rem;
+    background-size: 80%;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+#config-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 0;
+}
+
+#config-menu {
+    position: relative;
+    z-index: 0;
+    background-color: white;
+    width: min(95%, 30rem);
+}
+
+#config-menu-list {
+    margin: 3em 2rem 2rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 2rem;
+}
+
+#config-menu-list > li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.config-toggle-btn {
+    border: none !important;
+    border-radius: unset !important;
+    width: 4rem !important;
+    height: 1.5rem !important;
+    background-size: contain !important;
+
+}
+
+.config-toggle-btn:checked{
+    background: url(/episode/toggle_btn_on.png) no-repeat center;
+}
+.config-toggle-btn:not(:checked) {
+    background: url(/episode/toggle_btn_off.png) no-repeat center;
+}
+
+
+
+/* ベーススタイルに Track も合わせて設定 */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    margin: -10px;
+    /* Track のスタイル */
+    background-image: url("/episode/slider_bar.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 4px !important;
+    border: none !important;
+}
+
+/* Track: Chrome, Safari, Opera, Edge Chromium */
+input[type="range"]::-webkit-slider-runnable-track {
+    margin: -10px;
+    background-image: url("/episode/slider_bar.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 4px !important;
+    border: none !important;
+}
+
+/* Track: Firefox */
+input[type="range"]::-moz-range-track {
+    margin: -10px;
+    background-image: url("/episode/slider_bar.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 4px !important;
+    border: none !important;
+}
+
+
+/* Thumb: Chrome, Safari, Opera, Edge Chromium */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    /*background-color: #4cabe2;*/
+    /*border-radius: 50%;*/
+    background-image: url("/episode/slider_knob.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: relative;
+    top: -7px;
+}
+
+/* Thumb: Firefox */
+input[type="range"]::-moz-range-thumb {
+    border: none; /* つまみ部分の枠線を削除 */
+    height: 20px;
+    width: 20px;
+    /*background-color: #4cabe2;*/
+    /*border-radius: 50%;*/
+    background-image: url("/episode/slider_knob.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: relative;
+    top: -7px;
+}
+
+.slider-label {
+    display: block;
+    width: 4rem;
+    cursor: pointer;
+}
+
+
+#log-checkbox:checked+#log {
+    display: flex;
+}
+
+#log-checkbox:not(:checked)+#log {
+    display: none;
+}
+
+#log {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#log-window {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% 0;
+    background-color: rgba(255,255,255,0.75);
+    width: 100%;
+    height: 100%;
+}
+
+#log-ul {
+    overflow-y: scroll;
+    height: 90%;
+}
+
+.log-serif,
+.log-choice{
+    margin: 2rem 2rem 3rem;
+}
+.log-serif>h6 {
+    font-size: var(--medium);
+    color: var(--base-color);
+    font-weight: bold;
+}
+.log-serif>hr {
+    border-style: dashed;
+    border-color: var(--base-color);
+    height: 0.1px;
+    width: 100%;
+    margin: 0.2rem 0;
+}
+
+.log-choice {
+    display: flex;
+    justify-content: center;
+}
+
+.log-choice>div{
+    width: min(30rem, 95%);
+}
+
+.log-choice>div>h6 {
+    display: flex;
+    justify-content: space-between;
+    font-size: min(10px, 6vw);
+    font-weight: normal;
+    color: white;
+    background-color: var(--base-color);
+    width: fit-content;
+    padding: 0.1rem 0.2rem;
+}
+.log-choice>div>h6>img {
+    width: min(15px, 6vw);
+    height: min(15px, 6vw);
+}
+.log-choice>div>p{
+    border: 1px solid var(--base-color);
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+.log-choice.select1>div>h6 {
+    background-color: var(--select1);
+}
+.log-choice.select2>div>h6 {
+    background-color: var(--select2);
+}
+.log-choice.select3>div>h6 {
+    background-color: var(--select3);
+}
+.log-choice.select1>div>p {
+    border-color: var(--select1);
+}
+.log-choice.select2>div>p {
+    border-color: var(--select2);
+}
+.log-choice.select3>div>p {
+    border-color: var(--select3);
+}
+
+
+#toast {
+    display: flex;
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: var(--xx-large);
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    width: 100%;
+    height: 8rem;
+    background-image: url(/episode/toast_frame_blue.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#toast.show {
+    opacity: 1;
+}

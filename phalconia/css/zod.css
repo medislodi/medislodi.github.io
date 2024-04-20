@@ -1,0 +1,214 @@
+
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+
+header {
+    width: auto;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 3px 0.3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 5px;
+    justify-content: space-between;
+}
+
+header>h1,
+header>h2
+{
+    margin-left: 1rem;
+}
+
+footer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 3px 0.3px rgba(0, 0, 0, 0.3);
+    margin-top: auto;
+
+}
+
+footer>menu>ul {
+    display: flex;
+}
+
+
+label[for]{
+    cursor: pointer;
+}
+
+
+/** class **/
+
+/* ヘッダー・フッターをつけられるボーダー付きボックス */
+.card {
+    margin: 1rem;
+    border: 0.1px solid var(--border);
+    border-radius: 5px;
+}
+.card>header, .card>.header {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1.2rem 1rem;
+    border-bottom: 0.1px solid var(--border);
+    box-shadow: none;
+}
+.card>p, .card>div, .card>.body {
+    box-sizing: border-box;
+    padding: 0 1rem;
+    margin: 1rem;
+}
+.card>footer, .card>.footer {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1.2rem 1rem;
+    border-top: 0.1px solid var(--border);
+    box-shadow: none;
+
+}
+
+
+/* 横並び 均等 */
+.between-menu {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 山なり */
+.convex {
+    margin: 10px;
+    padding: 0.5rem 1rem;
+    /** https://neumorphism.io/#e6e6e6 **/
+    border-radius: 6px;
+    background: #e6e6e6;
+    box-shadow:  4px 4px 8px #b6b6b6,
+    -4px -4px 8px #ffffff;
+}
+
+/* アコーディオン */
+.accordion-label {
+    position: relative;
+    padding-right: 1rem;
+}
+
+.accordion-label:after {
+    position: absolute;
+    font-size: var(--small);
+    right: 0;
+    content: "▼";
+    cursor: pointer;
+}
+
+.accordion-check:checked ~ .accordion-label:after {
+    content: "▲";
+}
+
+.accordion-body {
+    transition: 0.3s linear;
+    overflow: hidden;
+    height: 0;
+}
+
+.accordion-check:checked ~ .accordion-body {
+     transition: all 0.3s linear;
+ }
+
+
+/** メディアクエリ **/
+
+/*--- スマホのとき ---*/
+section {
+    width: 100%;
+    margin: 0 auto 1rem;
+}
+
+.main_image {
+    height: 10rem;
+}
+
+article {
+    margin: 0 0.3rem;
+}
+
+input:not([type=radio],[type=checkbox],[type=submit],input[type=reset],input[type=file]), textarea, select {
+    width: 100%;
+    height: 2rem;
+}
+
+/* FileInputのプレビュー表示 */
+.preview {
+    width: 100%;
+    height: auto;
+}
+
+/*--- PCのとき ---*/
+@media screen and (min-width:480px) {
+    section {
+        max-width: 768px;
+        margin: 0 auto 1rem;
+    }
+    .main_image {
+        height: 20rem;
+    }
+    input:not([type=radio],[type=checkbox],[type=submit],input[type=reset],input[type=file]), textarea, select {
+        width: 15rem;
+    }
+
+    .preview {
+        width: 30%;
+        height: auto;
+    }
+}
+
+/* 丸いアイコン */
+.circle-icon-small {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    object-fit: contain;
+}
+.circle-icon-medium {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    object-fit: contain;
+}
+.circle-icon-large {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+#user-menu-icon:not(:checked)~.user-menu {
+    display: none;
+}
+
+.user-menu {
+    position: absolute;
+    padding: 1rem;
+    background-color: var(--background);
+    border: var(--border) solid 1px;
+    border-radius: 0.2rem;
+    top: 3rem;
+    right: 0;
+    z-index: var(--layer-popup);
+
+}
+
+
+table {
+    margin: 10px;
+    border-top: var(--border) 1px solid;
+    border-left: var(--border) 1px solid;
+}
+
+th, td{
+    border-right: var(--border) 1px solid;
+    border-bottom: var(--border) 1px solid;
+    padding: 3px 5px;
+}

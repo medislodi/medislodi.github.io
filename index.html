@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name=”format-detection” content=”email=no,telephone=no,address=no”>
+    <!-- iOS用 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Android用 -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+
+        <!-- favicon -->
+    <link rel="apple-touch-icon" type="image/png" href="/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/icon-192x192.png">
+
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;400;700&display=swap" rel="stylesheet">
+
+
+    <script src="/ajax/libs/leader-line/1.0.3/leader-line.min.js"></script>
+	
+	<script src="/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script type="module" src="/phalconia/js/DiContainer.mjs?r=17"></script>
+    <script type="application/javascript" src="/js/start.js?r=17"></script>
+    <script src="/js/pixi.js"></script>
+	<script src="/js/Tween.js"></script>
+	<script src="/ajax/libs/howler/2.2.3/howler.min.js"></script>
+
+<script type="text/javascript">
+    document.addEventListener('PhalconiaStart', ()=>{
+        import(`/js/episode/v4/Player.mjs?r=17`)
+            .then((classes)=>{
+                let player = new classes['Player']("id", 1 );
+                player.maxStage = 1;
+                player.type = "connect_with_stage";
+                                            }).catch((error)=>{
+                console.error(error);
+            })
+    });
+</script>
+
+    <link rel="stylesheet" href="/css/default.css?r=17">
+    <link rel="stylesheet" href="/phalconia/css/zod.css?r=17">
+    <link rel="stylesheet" href="/css/theme.css?r=17">
+    <link rel="stylesheet" href="/css/main.css?r=17">
+
+        <link rel="stylesheet" href="/css/episode.css">
+    <style>
+        body::before {
+            display: none !important;
+        }
+        #load_effect {
+            display: none !important;
+        }
+    </style>
+
+</head>
+<body>
+<div>
+			<div class="drop-zone">
+				<span class="drop-zone__prompt">Drop file here or click to upload</span>
+				<input type="file" name="myFile" class="drop-zone__input">
+			</div>
+
+			<script src="./src/main.js"></script>
+        <main id="app" class="mt-18px mb-100px scrollbar-none">
+                        <section class="contents-area unselectable">
+
+            <div id="head-menu-list">
+                <div id="head-menu-buttons">
+                    <label id="auto-play-btn" for="auto-play" class="head-menu-button">
+                        オート再生中
+                        <img class="white-circle-icon" src="/episode/icon_auto_stop.png">
+                    </label>
+
+                    <label id="auto-play-stop-btn" for="auto-play" class="head-menu-button">
+                        オート再生
+                        <img class="white-circle-icon" src="/episode/icon_auto_play.png">
+                    </label>
+
+                    <label id="log-btn" for="log-checkbox" class="head-menu-button">
+                        会話ログを表示
+                        <img class="white-circle-icon" src="/episode/icon_log_open.png">
+                    </label>
+                    <label for="config-checkbox" id="setting" class="head-menu-button">
+                        ADV再生設定
+                        <img class="white-circle-icon" src="/episode/icon_setting.png">
+                    </label>
+                </div>
+            </div>
+
+
+            <main id="adv">
+                <div id="pixi"></div>
+                <div id="ui">
+
+                    <div id="text-window" class="window unselectable">
+                        <p id="text-window-name"></p>
+                        <p id="text-window-body"></p>
+                        <img id="text-cursor" src="/resources/site/btn_arrow_green_left_big.png">
+                    </div>
+
+                    <div id="toast">
+
+                    </div>
+
+                    <div id="selectors-overlay"></div>
+
+                    <div class="selectors">
+                        <ul id="selectors">
+                            <li><button id="select1" class="select-btn more-btn" data-number="1"></button></li>
+                            <li><button id="select2" class="select-btn more-btn" data-number="2"></button></li>
+                            <li><button id="select3" class="select-btn more-btn" data-number="3"></button></li>
+                        </ul>
+                    </div>
+
+                </div>
+                <input id="log-checkbox" type="checkbox" class="popup-check">
+                <div id="log">
+                    <div id="config-overlay"></div>
+                    <div id="log-window">
+                        <header>
+                            <h6 class="w-100P ta-center fw-bold">会話ログ</h6>
+                            <label class="close-btn" for="log-checkbox"></label>
+                        </header>
+                        <hr class="m-0_auto w-98C5P">
+                        <ul id="log-ul">
+
+                        </ul>
+                    </div>
+
+                </div>
+            </main>
+
+            <input id="config-checkbox" type="checkbox" class="popup-check">
+            <div id="config">
+                <div id="config-overlay"></div>
+                <form id="config-menu">
+                    <header>
+                        <h6 class="w-100P ta-center fw-bold">設定</h6>
+                        <label class="close-btn" for="config-checkbox"></label>
+                    </header>
+                    <hr class="m-0_auto">
+                    <ul id="config-menu-list">
+                        <li>
+                            <label for="auto-continue">連続再生</label><input type="checkbox" id="auto-continue" name="auto-continue" class="config-toggle-btn">
+                        </li>
+                        <li>
+                            <label for="auto-play">AUTO再生</label><input type="checkbox" id="auto-play" name="auto-play" class="config-toggle-btn">
+                        </li>
+                        <li>
+                            <label for="visible-ui">UI</label><input type="checkbox" id="visible-ui" name="visible-ui" class="config-toggle-btn">
+                        </li>
+                        <li>
+                            <label for="voice-play">ボイス</label><input type="checkbox" id="voice-play" name="voice-play" class="config-toggle-btn">
+                        </li>
+                        <li>
+                            <label for="bgm-play">BGM</label><input type="checkbox" id="bgm-play" name="bgm-play" class="config-toggle-btn">
+                        </li>
+                        <li>
+                            <label for="se-play">SE</label><input type="checkbox" id="se-play" name="se-play" class="config-toggle-btn">
+                        </li>
+                        <li>
+                            <label for="mute">MUTE</label><input type="checkbox" id="mute" name="mute" class="config-toggle-btn">
+                        </li>
+                    </ul>
+                    <div class="flex-between m-0_2rem w-25em">
+                        <label>音量</label>
+                        <div class="flex-between w-70P">
+                            <label class="slider-label mr-0C5rem" type="range">MIN</label>
+                            <input id="volume" name="volume" type="range" min="0" max="1" step="0.01">
+                            <label class="ta-right slider-label">MAX</label>
+                        </div>
+                    </div>
+
+                    <div class="flex-between m-2rem w-25em">
+                        <label>セリフ表示</label>
+                        <div class="flex-between w-70P">
+                            <label class="slider-label mr-0C5rem">SLOW</label>
+                            <input id="serif-speed" name="serif-speed" type="range" min="50" max="290" step="10">
+                            <label class="ta-right slider-label">FAST</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+            <template id="log-serif-template">
+                <li class="log-serif">
+                    <h6 class="log-name"></h6>
+                    <hr class="log-hr">
+                    <p class="log-body"></p>
+                </li>
+            </template>
+
+            <template id="log-choice-template">
+                <li class="log-choice">
+                    <div>
+                        <h6>Your choice<img src="/episode/icon_check.png" alt=""></h6>
+                        <p class="log-body"></p>
+                    </div>
+                </li>
+            </template>
+
+            <div class="loading-overlay">
+                <div id="load-message" class="layer_mini_loading">
+                    <div id="loading-text" class="flex-center">
+                        <div class="pop-anime">L</div>
+                        <div class="pop-anime pop-anime-delay-1">O</div>
+                        <div class="pop-anime pop-anime-delay-2">A</div>
+                        <div class="pop-anime pop-anime-delay-3">D</div>
+                        <div class="pop-anime pop-anime-delay-4">I</div>
+                        <div class="pop-anime pop-anime-delay-5">N</div>
+                        <div class="pop-anime pop-anime-delay-6">G</div>
+                    </div>
+                    <progress id="loading-progress" max="100" value="0"></progress>
+                    <button id="start-btn" class="more-btn">START</button>
+                </div>
+
+
+            </div>
+        </section>
+
+        </main>
+                <img class="background-top" src="/resources/site/background_image_top.png">
+        <img class="background-bottom" src="/resources/site/background_image_bottom.png">
+
+        
+
+    <div id="cover"></div>
+</div>
+</body>
+<template id="loading-effect">
+    <div id="loading-bg">
+        <div>
+            <img id="loading-eagle" src="/resources/site/title_side_m_mark.png">
+            <p id="loading-text">loading...</p>
+        </div>
+    </div>
+
+</template>
+</html>
