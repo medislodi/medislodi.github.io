@@ -627,7 +627,7 @@ section>header:after,
 
 
 .story-link>span {
-    width: 6rem;
+    width: 4.5rem;
     background-color: var(--base-color);
     text-align: center;
     color: var(--font-reverce);
@@ -1703,13 +1703,14 @@ section>header:after,
     background-image: url("/resources/site/btn_library_entry.png");
     background-repeat: no-repeat;
     background-size: contain;
-    background-position: center;
-    width: 10rem;
-    height: 2rem;
+    background-position: left;
+    width: 8.3rem;
+    height: 1.6rem;
     line-height: 1rem;
-    padding: 0 1rem 0 2rem;
+    padding-left: 1.6rem;
     color: white;
-    font-size: var(--small);
+    font-size: 0.6rem !important;
+    justify-content: normal;
 }
 
 .FavoriteForm.remove>button {
@@ -1741,7 +1742,7 @@ section>header:after,
 
 .mark {
     width: auto;
-    height: 2rem;
+    height: 1.6rem;
     margin: 0 0.25rem;
 }
 
@@ -1840,4 +1841,9 @@ section>header:after,
         width: 50%;
         min-width: 103px;
     }
+}
+
+
+.ws-nowrp {
+    white-space: nowrap;
 }

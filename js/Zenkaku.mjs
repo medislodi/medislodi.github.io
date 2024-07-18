@@ -12,10 +12,9 @@ export class Zenkaku extends TagController{
 
 
         // this.element.style.display = "block";
-        console.log('before', this.element.scrollWidth);
+        // this.element.style.whiteSpace = "nowrap";
         this.element.innerText = this.toZen(this.element.innerText);
         const after = this.element.scrollWidth;
-        console.log('after', this.element.scrollWidth);
 
         let maxWidth = this.element?.dataset?.width;
         if(maxWidth){
@@ -29,7 +28,7 @@ export class Zenkaku extends TagController{
         }
 
         const scale = maxWidth / after;
-        // console.log('scale', scale, after, maxWidth);
+        console.log('scale', scale, after, maxWidth, this.element.innerText);
         if(scale < 1 && after > maxWidth) {
             this.element.style.transformOrigin = "0";
             this.element.style.transform = `scale(${scale}, 1)`;

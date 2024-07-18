@@ -15,52 +15,59 @@ body {
     scrollbar-width: none;
 }
 
+html:has(.loading-overlay) {
+    overflow: hidden;
+}
+html:has(.loading-overlay.loaded)  {
+    overflow: scroll;
+}
+
 .drop-zone {
-	display: inherit;
-	height: 200px;
-	padding: 25px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	font-family: "Quicksand", sans-serif;
-	font-weight: 500;
-	font-size: 20px;
-	cursor: pointer;
-	color: #cccccc;
-	border: 4px dashed #009578;
-	border-radius: 10px;
+    display: inherit;
+    height: 200px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    cursor: pointer;
+    color: #cccccc;
+    border: 4px dashed #009578;
+    border-radius: 10px;
 }
 
 .drop-zone--over {
-	border-style: solid;
+    border-style: solid;
 }
 
 .drop-zone__input {
-	display: none;
+    display: none;
 }
 
 .drop-zone__thumb {
-	width: 100%;
-	height: 100%;
-	border-radius: 10px;
-	overflow: hidden;
-	background-color: #cccccc;
-	background-size: cover;
-	position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #cccccc;
+    background-size: cover;
+    position: relative;
 }
 
 .drop-zone__thumb::after {
-	content: attr(data-label);
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	padding: 5px 0;
-	color: #ffffff;
-	background: rgba(0, 0, 0, 0.75);
-	font-size: 14px;
-	text-align: center;
+    content: attr(data-label);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 0;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.75);
+    font-size: 14px;
+    text-align: center;
 }
 
 body::-webkit-scrollbar,
@@ -104,7 +111,7 @@ html * {
     align-items: center;
 }
 
-#head-menu-list > h4 {
+.adv-title {
     height: 100%;
     line-height: 3em;
     white-space: nowrap;
@@ -112,6 +119,7 @@ html * {
 
 #head-menu-buttons {
     display: flex;
+    flex-wrap: wrap;
     justify-content: right;
 }
 
@@ -158,6 +166,7 @@ html * {
     width: 100%;
     height: 21%;
     bottom: 0;
+    bottom: 0% !important;
     cursor: pointer;
 }
 
@@ -307,6 +316,22 @@ html * {
     }
 }
 
+.loading-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--base-color);
+    background-image: url("/resources/site/eagle_green.png");
+    background-repeat: no-repeat;
+    background-size: min(15%, 10rem);
+    background-position: 50% 50%;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    opacity: 100;
+    transition: opacity 1s ease-out;
+    z-index: var(--layer-loading);
+}
 
 /* バーの背景を変える */
 progress {
@@ -433,10 +458,11 @@ progress {
     z-index: 0;
     background-color: white;
     width: min(95%, 30rem);
+    font-size: min(1rem, 2vh);
 }
 
 #config-menu-list {
-    margin: 3em 2rem 2rem 2rem;
+    margin: 3em 2em 2em 2em;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 2rem;
@@ -665,4 +691,13 @@ input[type="range"]::-moz-range-thumb {
 
 #toast.show {
     opacity: 1;
+}
+
+#volume, #serif-speed {
+    width: 7em;
+}
+
+#load-message {
+    position: absolute;
+    top: calc(50% + 50px);
 }
