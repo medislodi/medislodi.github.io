@@ -47,6 +47,10 @@ html:has(.loading-overlay.loaded)  {
     display: none;
 }
 
+.drop-zone__dir {
+    display: none;
+}
+
 .drop-zone__thumb {
     width: 100%;
     height: 100%;

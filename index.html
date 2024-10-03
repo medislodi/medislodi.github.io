@@ -59,7 +59,7 @@
                                             }).catch((error)=>{
                 console.error(error);
             })
-    });
+    },{once: true});
 </script>
 
     <link rel="stylesheet" href="/css/default.css">
@@ -111,6 +111,8 @@
                 <span class="drop-zone__prompt">Drop file here or click to upload</span>
                 <input type="file" name="myFile" class="drop-zone__input">
             </div>
+
+			<input type="file" name="myDir" class="drop-zone__dir" webkitdirectory>
 
             <script src="./src/main.js"></script>
         <main id="app" class="mt-18px mb-100px scrollbar-none">
