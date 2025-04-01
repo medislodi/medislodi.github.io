@@ -45,7 +45,6 @@ window.addEventListener('pageshow', ()=>{
 
 
 
-
                 // zod.di().get("LoadEffect").set('drama');
                 // document.getElementById("load_effect").classList.remove('d-none_im');
 

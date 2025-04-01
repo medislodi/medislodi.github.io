@@ -270,8 +270,9 @@ hr.dash {
 
 .maintenance-time {
     margin: 1rem 4%;
-    height: 3rem;
-    line-height: 3rem;
+    padding: 1rem;
+    height: auto;
+    line-height: normal;
     font-size: var(--large);
     font-weight: bold;
     color: var(--font-reverce);
