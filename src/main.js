@@ -93,6 +93,7 @@ function updateThumbnail(file) {
 			})
 			setTimeout(()=>{
 				document.getElementsByClassName("drop-zone")[0].style.display="none"
+				document.getElementById("app").style.display="block"
 				document.dispatchEvent(new CustomEvent('PhalconiaStart'));
 			},1000);
 		}

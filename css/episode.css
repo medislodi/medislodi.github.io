@@ -24,7 +24,10 @@ html:has(.loading-overlay.loaded)  {
 
 .drop-zone {
     display: inherit;
-    height: 200px;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    box-sizing: border-box;
     padding: 25px;
     display: flex;
     align-items: center;
@@ -74,6 +77,10 @@ html:has(.loading-overlay.loaded)  {
     text-align: center;
 }
 
+#app {
+    display: none;
+}
+
 body::-webkit-scrollbar,
 html::-webkit-scrollbar,
 div::-webkit-scrollbar
@@ -89,7 +96,7 @@ html * {
 
 
 .contents-area {
-    width: calc(85vh / 12 * 9);
+    width: calc(78vh / 12 * 9);
     max-width: 100%;
     position: relative;
 }
@@ -144,6 +151,11 @@ html * {
 
 #adv {
     position: relative;
+    border: #0FBE94 solid 1px;
+}
+
+.dp-down {
+    height: min(95.3vh,162.1vw);
 }
 
 #pixi > canvas {
@@ -169,8 +181,7 @@ html * {
     position: absolute;
     width: 100%;
     height: 21%;
-    bottom: 0;
-    bottom: 0% !important;
+    bottom: 0 !important;
     cursor: pointer;
 }
 
@@ -194,7 +205,7 @@ html * {
     position: absolute;
     top: 35%;
     margin-left: 3%;
-    font-size: min(min(2.3rem, 2.4vh), 3.7vw);
+    font-size: min(min(2.1rem, 2.2vh), 3.7vw);
     padding-left: 3%;
 }
 
@@ -239,6 +250,10 @@ html * {
     left: 50%;
     translate: -50% 50%;
     width: 90%;
+}
+
+.dp-down .selectors {
+    bottom: 59%;
 }
 
 
@@ -691,6 +706,11 @@ input[type="range"]::-moz-range-thumb {
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    text-align: center;
+}
+
+.dp-down #toast {
+    top : 40%;
 }
 
 #toast.show {
