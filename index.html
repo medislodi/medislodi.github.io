@@ -47,15 +47,15 @@
 	<script type="application/javascript" src="/js/createjs.min.js"></script>
     <script src="/ajax/libs/pixi.js/5.3.2/pixi.min.js"></script>
     <script src="/js/pixi-animate-container.min.js"></script>
-    <script src="/js/episode/v9/effects/gasha_eff.js"></script><script src="/js/episode/v9/effects/kira_eff.js"></script><script src="/js/episode/v9/effects/toast.js"></script>
+    <script src="/js/episode/v10/effects/gasha_eff.js"></script><script src="/js/episode/v10/effects/kira_eff.js"></script><script src="/js/episode/v10/effects/toast.js"></script>
     <script src="/js/Tween.js"></script>
     <script src="/ajax/libs/howler/2.2.3/howler.min.js"></script>
 
 <script type="text/javascript">
     var is_first_read = false;
-    var player_version = "v9";
+    var player_version = "v10";
     document.addEventListener('PhalconiaStart', ()=>{
-        import(`/js/episode/v9/Player.mjs`)
+        import(`/js/episode/v10/Player.mjs`)
             .then((classes)=>{
                 let player = new classes['Player']("id", 1 );
                 player.maxStage = 1;
