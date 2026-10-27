@@ -1,0 +1,727 @@
+'use strict';
+
+import {Chara} from "./Chara.mjs";
+import DiContainer from "/phalconia/js/DiContainer.mjs";
+import {Image} from "./Image.mjs";
+// import {KiraToGasha} from "./effects/KiraToGasha.mjs";
+import * as Effects from "./effects/Effects.mjs";
+import {Mask} from "./Mask.mjs";
+
+export class Resources {
+
+    token = "";
+    #list = [];
+    #characters = [];
+    #effects = [];
+    #resources = [];
+    #resource_ids = [];
+    #names = [];
+
+    /** @var {Player} */
+    #player;
+
+    /** @var {_Application} */
+    #pixi;
+
+    /** @var {_Container} */
+    #camera;
+
+    /** @var {_Container} */
+    #bg;
+    get bg() {
+        return this.#bg;
+    }
+
+    /** @var {_Container} */
+    #chara;
+    get chara() {
+        return this.#chara;
+    }
+
+    /** @var {_Container} */
+    #effect_library;
+
+    /** @var {_Container} */
+    #fg;
+    get fg() {
+        return this.#fg;
+    }
+
+    #load_total = 0;
+    #load_count = 0;
+    #test_count = 0;
+    #test_resource = {};
+
+    /**
+     *
+     * @param {Player} player
+     * @param {Array} resource_list
+     */
+    constructor(player) {
+        this.#player = player;
+        this.#pixi = player.app;
+
+        this.#camera = new PIXI.Container();
+        this.#camera.pivot.x= this.#player.width /2;
+        this.#camera.pivot.y= this.#player.height /2;
+        this.#camera.x = 0;
+        this.#camera.y = 0;
+
+        this.#bg = new PIXI.Container();
+        this.#bg.zIndex = 1;
+        this.#bg.sortableChildren = true;
+        this.#bg.x = this.#player.width/2;
+        this.#bg.y = this.#player.height/2;
+
+        this.#chara = new PIXI.Container();
+        this.#chara.x = this.#player.width;
+        this.#chara.y = this.#player.height/2;
+        this.#chara.sortableChildren = true;
+        this.#chara.zIndex = 10;
+
+        this.#fg = new PIXI.Container();
+        this.#fg.x = this.#player.width/2;
+        this.#fg.y = this.#player.height/2;
+        this.#fg.sortableChildren = true;
+        this.#fg.zIndex = 100;
+
+        this.#camera.addChild(this.#bg);
+        this.#camera.addChild(this.#chara);
+        this.#camera.addChild(this.#fg);
+
+        this.#pixi.stage.addChild(this.#camera);
+
+        this.#resources[1] = this.#camera;
+        this.#resources[2] = this.#player.textWindow;
+
+        this.#resource_ids.push(1);
+        this.#resource_ids.push(2);
+
+
+        // PIXI.animate.loadAssetAsync([{
+        //     id: "51D95914D18E47FEB298090813CA36EC",
+        //     basepath: "/js/episode/"+player_version+"/effects/",
+        //     options: {
+        //         crossOrigin: false
+        //     }
+        // }]).then((lib)=> {
+        //
+        //
+        //     const effect = new KiraToGasha(lib, this.#player);
+        //
+        //     console.log('■■■effect', effect);
+        //     effect.x = player.width/2*-1;
+        //     effect.y = 0;
+        //     effect.zIndex = 10;
+        //     this.effects.push(effect);
+        //
+        //     this.#chara.addChild(effect);
+        //
+        //
+        // })
+    }
+
+
+    /**
+     * コンテナをリセット
+     */
+    reset(){
+        for (const resource_id of this.#resource_ids) {
+            let resource = this.getResource(resource_id);
+            if(resource.is_mask_camera) resource = this.getResource(resource_id + "m");
+
+        // for (const resource of this.#resources) {
+        // this.#resources.forEach((resource)=>{
+            console.log('#mask init @@+ reset resource ======================================',resource_id, resource.resource_category, resource instanceof PIXI.Container, resource instanceof Mask);
+
+            if(resource instanceof Howl) {
+                resource.stop();
+                resource.volume(resource.defaultVolume);
+            }else if(resource instanceof Image || resource instanceof Chara || resource instanceof PIXI.Container || resource instanceof Mask) {
+                console.log('@@+ resource', resource.resource_id, resource);
+                resource.x = 0;
+                resource.y = 0;
+                resource.zIndex = 0;
+                console.log('@@+ resource scale', resource.scale.x, resource.scale.y);
+                resource.scale.x = resource.scale.y = 1;
+                if(resource.resource_category === "image" || resource.resource_category === "chara") {
+                    console.log('@@+ ', resource);
+                    console.log('@@+ before alpha', resource.alpha);
+                    resource.alpha = resource.defaultAlpha;
+                    console.log('@@+ after alpha', resource.alpha);
+                }
+
+                if(resource.property){
+                    console.log('@@+ property', resource.property);
+                    resource.visible = resource.property.visible ? resource.property.visible : resource.visible;
+
+                    resource.x = resource.property.x ? resource.property.x : resource.x;
+                    resource.y = resource.property.y ? resource.property.y : resource.y;
+                    resource.zIndex = resource.property.zIndex ? resource.property.zIndex : resource.zIndex;
+                    resource.alpha = resource.property.alpha ? resource.property.alpha : resource.alpha;
+                    resource.scale.x = resource.property.scale?.x ? resource.property.scale.x : resource.scale.x;
+                    resource.scale.y = resource.property.scale?.y ? resource.property.scale.y : resource.scale.y;
+                    resource.filters = resource.property.filters ? resource.property.filters : resource.filters;
+                }
+
+
+                if(resource.resource_category === "chara") {
+                    console.log('@@+ chara', resource.alpha);
+                    resource.animator.stop(resource);
+                    resource.initFace();
+                    resource.resetParam();
+
+                }
+                if(resource.resource_category === "effect") {
+                    console.log('@@+ effect', resource);
+                    resource.visible = false;
+                    resource.movie.gotoAndStop(0);
+                }
+
+                if(resource.resource_category === "mask") {
+                    resource.init();
+                }
+
+                if(resource.filters !== null) {
+                    resource.filters.forEach((filter) => {
+                        console.log('@@+ filter reset', filter);
+                        if (filter instanceof PIXI.filters.ColorMatrixFilter) {
+                            filter.reset();
+                        }
+                        if (filter instanceof PIXI.filters.BlurFilter) {
+                            filter.blur = 0;
+                        }
+                        if (filter instanceof PIXI.filters.NoiseFilter) {
+                            filter.noise = 0;
+                        }
+                    });
+                    // resource.filters = [];
+                }
+
+                // this.activeFilters = [];
+            }
+
+            console.log('@@+ reset resource　finish ======================================');
+        // });
+        }
+    }
+
+
+    /**
+     * リソースリストを設定
+     * @param resource_list
+     */
+    setResourceList(resource_list){
+        this.#list = resource_list;
+    }
+
+    /**
+     * リソースを取得
+     * @param id
+     * @return {Chara|PIXI.Sprite}
+     */
+    getResource(id){
+        return this.#resources[id] ?? null;
+    }
+
+
+    #effectInit(animation_ids) {
+        if(animation_ids.length === 0) return Promise.resolve();
+        console.log('■■■■　effect ids', animation_ids);
+        const assets = animation_ids.map(id => ({
+            id: id,
+            basepath: `/js/episode/${player_version}/effects/`,
+            options: {
+                crossOrigin: false
+            }
+        }));
+        return PIXI.animate.loadAssetAsync(assets).then((lib) => {
+            this.#effect_library = lib;
+        });
+    }
+
+
+    /**
+     * アセットをプリロードする
+     * @return {Promise<unknown>}
+     */
+    preload(){
+        // console.log('preload');
+
+
+        // 先にエフェクトの準備をする
+        let effect_ids = [];
+        for (const [id, resource_data] of Object.entries(this.#list)) {
+            if (resource_data.category === "effect") effect_ids.push(resource_data.type);
+        }
+        return this.#effectInit(effect_ids).then(()=> {
+
+            let loaded = [];
+            this.#load_total = Object.entries(this.#list).length;
+            this.#load_count = 0;
+
+			let promises = [];
+			
+			function _arrayBufferToBase64( buffer ) {
+				var binary = '';
+				var bytes = new Uint8Array( buffer );
+				var len = bytes.byteLength;
+				for (var i = 0; i < len; i++) {
+					binary += String.fromCharCode( bytes[ i ] );
+				}
+				return window.btoa( binary );
+			}
+			
+            for (const [id, resource_data] of Object.entries(this.#list)) {
+                // console.log(id, resource_data);
+                const url = _arrayBufferToBase64(dataresources[this.token+"/"+id]);
+
+                resource_data.test_id = id;
+                // this.#test_resource[id] = resource_data;
+
+                loaded.push(url);
+                switch (resource_data.category) {
+                    case "chara":
+                        promises.push(this.#createChara(url, resource_data));
+                        break;
+                    case "mob":
+                        promises.push(this.#createName(resource_data));
+                        break;
+                    case "voice":
+                    case "se":
+                        promises.push(this.#createSound(resource_data, url, false));
+                        break;
+                    case "bgm":
+                        promises.push(this.#createSound(resource_data, url, true));
+                        break;
+                    case "color":
+                        promises.push(this.#createRectangle(resource_data));
+                        break;
+                    case "effect":
+                        promises.push(this.#createEffect(resource_data));
+                        break;
+                    case "mask":
+                        promises.push(this.#createMask(resource_data));
+                        break;
+                    case "system":
+                        break;
+                    default :
+                        promises.push(this.#createImage(url, resource_data));
+                }
+                this.#test_count++;
+            }
+
+            return Promise.all(promises);
+        });
+
+    }
+
+
+    /**
+     * サウンドデータをロード＆作成
+     * @param resource_data
+     * @param url
+     * @param loop
+     * @returns {Promise<unknown>}
+     */
+    #createSound(resource_data, url, loop){
+		url = 'data:music/mp3;base64,' + url
+        return new Promise((resolve, reject)=>{
+            const volume = resource_data.category === "bgm" ? 0.1 : 0.5;
+            // console.log(resource_data.category, volume);
+            this.#resources[resource_data.resource_id] = new Howl({
+                src: url,
+                format: "mp3",
+                volume: volume,
+                onload: ()=>{
+                    // this.#test_resource[resource_data.test_id].loaded = true;
+                    this.#updateLoadCount();
+
+                    resolve();
+                },
+                onloaderror: (id, error)=>{
+                    let formdata = new FormData();
+                    formdata.append('error', error);
+                    formdata.append('resource_data', JSON.stringify(resource_data));
+                    console.error(resource_data)
+                    reject(error);
+                },
+                loop: loop,
+            });
+            this.#resources[resource_data.resource_id].defaultVolume = volume;
+            this.#resources[resource_data.resource_id].resource_id = resource_data.resource_id;
+            this.#resources[resource_data.resource_id].resource_type = resource_data.type;
+            this.#resources[resource_data.resource_id].resource_category = "sound";
+            this.#resource_ids.push(resource_data.resource_id);
+        }).catch((error)=>{
+            console.error(error, resource_data);
+        });
+    }
+
+    /**
+     * 矩形を生成してPromiseを返す
+     * @param resource_data
+     * @param color
+     * @return {Promise<PIXI.Graphics>}
+     */
+    #createRectangle(resource_data){
+        // console.log('create color', resource_data);
+        return new Promise((resolve)=>{
+            let rectangle = new PIXI.Graphics()
+                .beginFill(resource_data.name)
+                .drawRect(0,0, this.#player.width, this.#player.height)
+                .endFill();
+            let container = new PIXI.Container();
+            container.addChild(rectangle);
+            container.alpha = container.defaultAlpha = 0;
+            container.x = container.y = 0;
+            container.resource_type = resource_data.type;
+            container.resource_category = "image";
+
+            this.#resources[resource_data.resource_id] = container;
+            this.#resource_ids.push(resource_data.resource_id);
+            if(resource_data.type === "background"){
+                this.#bg.addChild(container);
+            }else if(resource_data.type === "fg"){
+                this.#fg.addChild(container);
+            }else{
+                this.#pixi.stage.addChild(container);
+            }
+            // this.#test_resource[resource_data.test_id].loaded = true;
+            this.#updateLoadCount();
+            resolve();
+        });
+    }
+
+    /**
+     *
+     * @param url
+     * @param resource_data
+     * @return {Promise<Chara>}
+     */
+    #createChara(url, resource_data){
+		url = 'data:image/png;base64,' + url
+        return PIXI.Texture.fromURL(url).then((texture)=>{
+            return new Promise((resolve)=>{
+                // console.log('loaded',resource_data.name, resource_data.wear, resource_data.face);
+                if(!this.#characters[resource_data.name]){
+                    this.#characters[resource_data.name] = new Chara(resource_data.name, this.#player);
+                    this.#characters[resource_data.name].resource_type = resource_data.type;
+                    this.#characters[resource_data.name].resource_category = "chara";
+                    this.#characters[resource_data.name].alpha = this.#characters[resource_data.name].defaultAlpha = 1;
+                    this.#chara.addChild(this.#characters[resource_data.name]);
+                }
+                this.#characters[resource_data.name].setFace(resource_data.wear, resource_data.face, new PIXI.Sprite(texture));
+                this.#names[resource_data.resource_id] = resource_data.name;
+                this.#resources[resource_data.resource_id] = this.#characters[resource_data.name];
+                this.#resource_ids.push(resource_data.resource_id);
+                // this.#test_resource[resource_data.test_id].loaded = true;
+                this.#updateLoadCount();
+                resolve();
+            });
+        }).catch((error)=>{
+            console.error(error, resource_data);
+        });
+
+    }
+
+    #createName(resource_data){
+        return new Promise((resolve)=>{
+            // console.log('create name', resource_data);
+            // this.#test_resource[resource_data.test_id].loaded = true;
+            this.#updateLoadCount();
+            this.#names[resource_data.resource_id] = resource_data.name;
+            resolve();
+        });
+
+    }
+
+
+    /**
+     *
+     * @param resource_id
+     * @returns {String|null}
+     */
+    getName(resource_id){
+        // console.log(resource_id, this.#names);
+        return this.#names[resource_id] ?? null;
+    }
+
+    getChara(name) {
+        return this.#characters[name] ?? null;
+    }
+
+
+    /**
+     *
+     * @param url
+     * @param resource_data
+     * @return {Promise<PIXI.Sprite>}
+     */
+    #createImage(url, resource_data){
+		url = 'data:image/png;base64,' + url;
+        return PIXI.Texture.fromURL(url).then((texture)=> {
+            return new Promise((resolve) => {
+                let container = this.#createSprite(texture);
+                container.texture = texture;
+                container.resource_id = resource_data.resource_id;
+                container.resource_type = resource_data.type;
+
+                if(resource_data.type === "background"){
+
+                    this.#bg.addChild(container);
+                }else{
+                    this.#fg.addChild(container);
+                }
+                this.#resources[resource_data.resource_id] = container;
+                this.#resource_ids.push(resource_data.resource_id);
+                // this.#test_resource[resource_data.test_id].loaded = true;
+                this.#updateLoadCount();
+
+                resolve();
+            }).catch((error)=>{
+                console.error(error, resource_data);
+            });
+        });
+
+    }
+
+
+    imageCopy(base_resource_id, new_resource_id, option){
+        let resource = this.getResource(base_resource_id);
+        console.log('imageCopy', option === "" ? '{}' : option);
+        let property = JSON.parse(option === "" ? '{}' : option);
+        if(!resource || this.#resources[new_resource_id]) return Promise.resolve();
+        return new Promise((resolve) => {
+            const container = this.#cloneDisplayObject(resource);
+            container.resource_id = Number(new_resource_id);
+            container.resource_category = resource.resource_category;
+            container.resource_type = resource.resource_type;
+            this.#resources[new_resource_id] = container;
+            this.#resource_ids.push(new_resource_id);
+
+            if (container.resource_category === "chara") {
+                this.#chara.addChild(container);
+            } else if (container.resource_category === "image") {
+                if (container.resource_type === "background") {
+                    this.#bg.addChild(container);
+                } else {
+                    this.#fg.addChild(container);
+                }
+
+            }
+
+            // コピー元のプロパティ設定が終わっていない時があるので、10ms待つ
+            setTimeout(() => {
+                // propertyに設定されていたらその値、されてなかったらresourceの値を設定する
+                container.visible = property.visible ?? resource.visible;
+                container.x = property.x ?? resource.x;
+                container.y = property.y ?? resource.y;
+                container.zIndex = property.zIndex ?? resource.zIndex;
+                container.alpha = property.alpha ?? resource.alpha;
+                container.scale.x = property?.scale?.x ?? resource.scale.x;
+                container.scale.y = property?.scale?.y ?? resource.scale.y;
+                container.width = property.width ?? resource.width;
+                container.height = property.height ?? resource.height;
+                // container.filters = resource.filters;
+                container.defaultAlpha = property.alpha ?? resource.alpha;
+
+                // property.filters = resource.filters;
+                container.property = property;
+
+                resolve();
+            },10);
+
+
+
+        // // if(resource.resource_type === "background" || resource.resource_type === "fg" || resource.resource_type === "image") {
+        //     return new Promise((resolve) => {
+        //         const container = this.#createSprite(resource.texture);
+        //         container.texture = resource.texture;
+        //         container.resource_id = Number(new_resource_id);
+        //         container.resource_category = resource.resource_category;
+        //         container.resource_type = resource.resource_type;
+        //
+        //         // resourceのchildrenをコピーする
+        //         if (resource.children) {
+        //             resource.children.forEach((child) => {
+        //                 // childをclone
+        //                 let clone = child.clone();
+        //                 container.addChild(clone);
+        //             });
+        //         }
+        //
+        //         this.#resources[new_resource_id] = container;
+        //         this.#resource_ids.push(new_resource_id);
+        //         if(container.resource_category === "chara"){
+        //             this.#chara.addChild(container);
+        //         }else if (container.resource_category === "image") {
+        //             if (container.resource_type === "background") {
+        //                 this.#bg.addChild(container);
+        //             } else {
+        //                 this.#fg.addChild(container);
+        //             }
+        //
+        //         }
+        //
+        //         // プロパティもコピーする
+        //         // コピー元のプロパティ設定が終わっていない時があるので、100ms待つ
+        //         setTimeout(() => {
+        //
+        //             // propertyに設定されていたらその値、されてなかったらresourceの値を設定する
+        //             container.visible = property.visible ?? resource.visible;
+        //             container.x = property.x ?? resource.x;
+        //             container.y = property.y ?? resource.y;
+        //             container.zIndex = property.zIndex ?? resource.zIndex;
+        //             container.alpha = property.alpha ?? resource.alpha;
+        //             container.scale.x = property?.scale?.x ?? resource.scale.x;
+        //             container.scale.y = property?.scale?.y ?? resource.scale.y;
+        //             container.width = property.width ?? resource.width;
+        //             container.height = property.height ?? resource.height;
+        //             // container.filters = resource.filters;
+        //             container.defaultAlpha = property.alpha ?? resource.alpha;
+        //
+        //             // property.filters = resource.filters;
+        //             container.property = property;
+        //             console.log('imageCopy',container, resource);
+        //
+        //             resolve();
+        //         },100);
+                
+            });
+        // }else{
+        //     throw new Error("imageCopy is not background or fg");
+        // }
+    }
+
+
+    /**
+     * スプライトを作成する
+     * @param texture
+     * @returns {Image}
+     */
+    #createSprite(texture){
+        let image = new PIXI.Sprite(texture);
+        image.anchor.set(0.5);
+        image.x = this.#player.width /2;
+        image.y = this.#player.height - (image.height/2);
+        // console.log(image.x, image.y);
+
+        let container = new Image();
+        container.addChild(image);
+        container.alpha = container.defaultAlpha = 0;
+        container.x = container.y = 0;
+        container.filters = [];
+
+        container.resource_category = "image";
+
+        return container;
+    }
+
+
+    #createEffect(resource_data){
+        return new Promise((resolve) => {
+            const className = this.#player.toPascalCase(resource_data.name);
+            const effect = new Effects[className](this.#effect_library, this.#player);
+            effect.visible = false;
+            effect.movie.gotoAndStop(0);
+            effect.resource_id = resource_data.resource_id;
+            effect.resource_type = resource_data.type;
+            effect.resource_category = "effect";
+            this.#resources[resource_data.resource_id] = effect;
+            this.#resource_ids.push(resource_data.resource_id);
+            this.#effects.push(effect);
+            this.#chara.addChild(effect);
+            resolve(effect);
+        }).catch((error)=>{
+            console.error(error, resource_data);
+        });
+
+    }
+
+    #createMask(resource_data){
+        console.log('create mask', resource_data);
+        return new Promise((resolve)=>{
+            const mask = new Mask(this.#player);
+            mask.resource_id = resource_data.resource_id;
+            mask.resource_type = resource_data.type;
+            mask.resource_category = "mask";
+            mask.camera.is_mask_camera = true
+            this.#resources[resource_data.resource_id + "m"] = mask;
+            this.#resources[resource_data.resource_id] = mask.camera;
+            this.#resource_ids.push(resource_data.resource_id);
+            // console.log('createMask', this.#camera.x, this.#camera.y, this.#chara.x, this.#chara.y);
+            // this.#camera.addChild(mask);
+            this.#chara.addChild(mask);
+            resolve(mask);
+        }).catch((error)=>{
+            console.error(error, resource_data);
+            DiContainer.get('Net').ajax('POST', '/api/crush/put', {error:error, resource_data:resource_data});
+        });
+    }
+
+
+    /**
+     *
+     */
+    #updateLoadCount(){
+        this.#load_count++;
+        // console.log('#', this.#load_count , this.#load_total, this.#test_count);
+        this.#player.ui.loadingProgress().value = Math.floor(this.#load_count / this.#load_total * 100);
+        // console.log('#', Object.values( this.#test_resource).filter(resource => !resource.loaded));
+    }
+
+
+    #cloneDisplayObject(obj) {
+        let clone;
+
+        // Sprite → texture, tint, anchor をコピー
+        if (obj instanceof PIXI.Sprite) {
+            clone = new PIXI.Sprite(obj.texture);
+            clone.tint = obj.tint;
+            clone.anchor.copyFrom(obj.anchor);
+
+            // Graphics → clone() があればそれを使う
+        } else if (obj instanceof PIXI.Graphics) {
+            // PixiJS v5+ なら clone() が使える
+            clone = obj.clone();
+
+            // Text → text と style を新規作成
+        } else if (obj instanceof PIXI.Text) {
+            // style は深いコピーが必要なら new PIXI.TextStyle(obj.style.toJSON())
+            clone = new PIXI.Text(obj.text, obj.style);
+
+            // Container → 子要素を再帰クローン
+        } else if (obj instanceof PIXI.Container) {
+            clone = new PIXI.Container();
+            clone.name = obj.name;
+            for (const child of obj.children) {
+                clone.addChild(this.#cloneDisplayObject(child));
+            }
+
+            // その他 → 空の Container で代替
+        } else {
+            console.log("xxxxxxxxxxxxxxx")
+            clone = new PIXI.Container();
+        }
+
+        // --- 以下、すべての DisplayObject に共通のプロパティをコピー ---
+        clone.position.copyFrom(obj.position);
+        clone.scale.copyFrom(obj.scale);
+        clone.pivot.copyFrom(obj.pivot);
+        clone.rotation = obj.rotation;
+        clone.alpha    = obj.alpha;
+        clone.visible  = obj.visible;
+        clone.interactive = obj.interactive;
+        clone.buttonMode  = obj.buttonMode;
+        clone.filters     = obj.filters && [...obj.filters];
+        clone.mask        = obj.mask;
+        clone.hitArea     = obj.hitArea;
+        clone.zIndex      = obj.zIndex;
+        clone.name        = obj.name;
+
+        return clone;
+    }
+
+
+}
