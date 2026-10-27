@@ -24,7 +24,11 @@ window.addEventListener('pageshow', ()=>{
 
 
                 // 数字で終わってなかったらURLの後ろのスラッシュ追加
-                if(!location.href.match(/\/[0-9]+$|\/$/)) history.replaceState('','',location.href + '/');
+                const [baseUrl, query] = location.href.split('?');
+                if (!baseUrl.match(/\/[0-9]+$|\/\?/)) {
+                    const updatedUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+                    history.replaceState('', '', query ? `${updatedUrl}?${query}` : updatedUrl);
+                }
                 // 数字で終わってたらURLの後ろのスラッシュ削除
                 if(location.href.match(/\/[0-9]+\/$/)) history.replaceState('','',location.href.replace(/\/$/,''));
 

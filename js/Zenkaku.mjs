@@ -21,14 +21,14 @@ export class Zenkaku extends TagController{
             const dummy = document.createElement("DIV");
             dummy.style.width = maxWidth;
             this.element.appendChild(dummy);
-            console.log(dummy.clientWidth);
+            // console.log(dummy.clientWidth);
             maxWidth = dummy.clientWidth;
         }else{
             maxWidth = this.element.clientWidth;
         }
 
         const scale = maxWidth / after;
-        console.log('scale', scale, after, maxWidth, this.element.innerText);
+        // console.log('scale', scale, after, maxWidth, this.element.innerText);
         if(scale < 1 && after > maxWidth) {
             this.element.style.transformOrigin = "0";
             this.element.style.transform = `scale(${scale}, 1)`;
