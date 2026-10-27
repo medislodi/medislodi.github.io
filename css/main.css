@@ -198,7 +198,8 @@ hr.dash {
     display: none;
 }
 
-.popup-check:not(:checked)~label{
+.popup-check:not(:checked)~label ,
+.popup-check:not(:checked)~.popup-content {
     display: none;
 }
 
@@ -354,6 +355,7 @@ section>header {
     max-width: var(--max-width-inner);
     text-align: center;
     margin: 3rem auto 1.5rem;
+    line-height: 1.2;
 }
 
 
@@ -596,6 +598,23 @@ section>header:after,
     box-shadow: 0 0 5px rgba(102, 102, 102, 0.3);
 }
 
+
+#search-form-check:checked~.search-form.h-10 {
+    opacity: 1;
+    margin: 1rem 0.2rem;
+    height: 12rem;
+    padding: 1.5rem 1rem 2rem 1rem;
+    box-shadow: 0 0 5px rgba(102, 102, 102, 0.3);
+}
+
+#search-form-check.year:checked~.search-form.h-10 {
+    opacity: 1;
+    margin: 1rem 0.2rem;
+    height: 16rem;
+    padding: 1.5rem 1rem 2rem 1rem;
+    box-shadow: 0 0 5px rgba(102, 102, 102, 0.3);
+}
+
 .new-mark {
     position: absolute;
     top: 0.1rem;
@@ -628,6 +647,17 @@ section>header:after,
 
 
 .story-link>span {
+    width: 4.5rem;
+    background-color: var(--base-color);
+    text-align: center;
+    color: var(--font-reverce);
+    margin-right: 1rem;
+    border-right: 2px solid white;
+    line-height: 2.8rem;
+}
+
+
+.story-link-wa {
     width: 4.5rem;
     background-color: var(--base-color);
     text-align: center;
@@ -1199,7 +1229,7 @@ section>header:after,
 }
 
 .stories {
-    margin: 2rem auto;
+    margin: 2rem auto 0.5rem;
     display: grid;
     justify-content: center;
     grid-template-columns: repeat(5, 1fr);
@@ -1212,7 +1242,7 @@ section>header:after,
 }
 
 .stories.vertical {
-    margin: 2rem 0;
+    margin: 2rem 0 0.5rem;
     padding-left: 25px;
     padding-right: 25px;
     /*width: 100vw;*/
@@ -1847,4 +1877,45 @@ section>header:after,
 
 .ws-nowrp {
     white-space: nowrap;
+}
+
+
+.pp-info {
+    height: 2rem;
+    border-radius: 1rem;
+    background-color: var(--priority);
+    color: white;
+    width: 15rem;
+    text-align: center;
+    line-height: 2rem;
+    font-weight: bold;
+    margin-top: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.pp-info-mini {
+    height: 1.2rem;
+    border-radius: 0.6rem;
+    background-color: var(--priority);
+    color: white;
+    width: 10rem;
+    text-align: center;
+    line-height: 1.2rem;
+    font-size: 0.8rem;
+    margin-left: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.pp-info--disabled {
+    background-color: #a8a8a8;
+}
+
+.jc-betw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+dialog {
+    margin: auto !important;
 }
