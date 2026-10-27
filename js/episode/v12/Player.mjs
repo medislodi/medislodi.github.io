@@ -531,6 +531,10 @@ export class Player {
         return !voice_finished;
     }
 
+    #isSkippingBeforeTarget(){
+        return this.isSkip && this.skipTarget !== this.scenario_index;
+    }
+
     /**
      * 進行中のシナリオをリセットし、最初から再生する
      */
@@ -986,6 +990,9 @@ export class Player {
                 }
                 promises.push(this.textWindow.set(name, scenario.value, scenario.sound ?? 0 ));
                 const voice = this.#resources.getResource(scenario.sound);
+                if(voice !== null && this.#isSkippingBeforeTarget() && !isNaN(scenario.volume) && scenario.volume > 0) {
+                    voice.volume(scenario.volume);
+                }
                 if(voice !== null && (!this.isSkip || this.skipTarget === this.scenario_index)) {
 
                     // soundのIDでSEかどうかを判断する
@@ -1114,6 +1121,7 @@ export class Player {
         /** @var {Chara} chara */
         const chara = this.#resources.getResource(scenario.resource_id);
         return chara.changeFace.bind(chara)(scenario.wear,scenario.face);
+
     }
 
 
@@ -1195,6 +1203,9 @@ export class Player {
         }
 
         const se = this.#resources.getResource(scenario.sound);
+        if(se !== null && this.#isSkippingBeforeTarget() && !isNaN(scenario.volume) && scenario.volume > 0) {
+            se.volume(scenario.volume);
+        }
         if(se !== null && (!this.isSkip || this.skipTarget === this.scenario_index)){
             // console.log('se play');
             // soundのIDでSEかどうかを判断する
@@ -1229,6 +1240,9 @@ export class Player {
         console.log('@@+@@ voice', voice !== null, scenario.sound, this.isSkip, this.skipTarget, this.scenario_index);
         if(voice !== null) this.voice_for_replay.push(scenario.sound);
         console.log('@@+@@ voice_for_replay.length',  this.voice_for_replay.length);
+        if(voice !== null && this.#isSkippingBeforeTarget() && !isNaN(scenario.volume) && scenario.volume > 0) {
+            voice.volume(scenario.volume);
+        }
         if(voice !== null && (!this.isSkip || this.skipTarget === this.scenario_index)) {
             voice.mute(!this.setting.voice);
             if (!isNaN(scenario.volume) && scenario.volume > 0) voice.volume(scenario.volume);
